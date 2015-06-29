@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "us2smm", "us2smm\us2smm.csproj", "{A8EE36FB-803B-4B11-BEC2-2B255B7C40C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "us2lrc", "us2lrc\us2lrc.csproj", "{A8EE36FB-803B-4B11-BEC2-2B255B7C40C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

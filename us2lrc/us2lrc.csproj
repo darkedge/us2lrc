@@ -7,8 +7,8 @@
     <ProjectGuid>{A8EE36FB-803B-4B11-BEC2-2B255B7C40C5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>us2smm</RootNamespace>
-    <AssemblyName>us2smm</AssemblyName>
+    <RootNamespace>us2lrc</RootNamespace>
+    <AssemblyName>us2lrc</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
