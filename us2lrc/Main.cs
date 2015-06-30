@@ -8,17 +8,13 @@ using System.Text.RegularExpressions;
 
 namespace us2lrc
 {
-    class USFormat
-    {
-        public static string[] TAGS_MANDATORY = { "TITLE", "ARTIST", "MP3", "GAP", "BPM" };
-    }
-
     class Converter
     {
         static void ConvertUSToTXT(string path, string outPath)
         {
             Console.WriteLine("Converting file: " + path);
             Dictionary<string, string> tagValues = new Dictionary<string, string>();
+            string[] TAGS_MANDATORY = { "TITLE", "ARTIST", "MP3", "GAP", "BPM" };
             List<string> lines = new List<string>();
             string str = "";
             string last = "";
@@ -35,10 +31,10 @@ namespace us2lrc
                     var match = Regex.Match(line, "^#(?<TAG>.*):(?<VALUE>.*)");
                     if (match.Success)
                     {
-                        for (int i = 0; i < USFormat.TAGS_MANDATORY.Length; i++)
+                        for (int i = 0; i < TAGS_MANDATORY.Length; i++)
                         {
                             string tag = match.Groups["TAG"].Value;
-                            if (tag == USFormat.TAGS_MANDATORY[i])
+                            if (tag == TAGS_MANDATORY[i])
                             {
                                 tagValues[tag] = match.Groups["VALUE"].Value;
                                 if (tag == "BPM")
@@ -110,8 +106,6 @@ namespace us2lrc
                 }
             }
 
-            //FileStream file = new FileStream("highscores.txt", FileMode.Append, FileAccess.Write);
-
             // Create destination text file
             string fileWOExtension = Path.GetFileNameWithoutExtension(path);
             string outFile = Path.Combine(outPath, fileWOExtension + ".lrc");
@@ -149,14 +143,7 @@ namespace us2lrc
 
             foreach (string name in inFiles)
             {
-                //try
-                //{
-                    ConvertUSToTXT(name, outPath);
-                //}
-                //catch (Exception e)
-                //{
-                //    Console.WriteLine(e.Message);
-                //}
+                ConvertUSToTXT(name, outPath);
             }
         }
     }
