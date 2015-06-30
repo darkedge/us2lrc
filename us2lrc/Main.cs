@@ -13,13 +13,13 @@ namespace us2lrc
         static void ConvertUSToTXT(string path, string outPath)
         {
             Console.WriteLine("Converting file: " + path);
-            Dictionary<string, string> tagValues = new Dictionary<string, string>();
-            string[] TAGS_MANDATORY = { "TITLE", "ARTIST", "MP3", "GAP", "BPM" };
             List<string> lines = new List<string>();
             string str = "";
             string last = "";
             double bpm = 0.0;
             double gap = 0.0;
+            string title = "";
+            string artist = "";
 
             // Read file
             using (StreamReader rdr = new StreamReader(path))
@@ -31,23 +31,24 @@ namespace us2lrc
                     var match = Regex.Match(line, "^#(?<TAG>.*):(?<VALUE>.*)");
                     if (match.Success)
                     {
-                        for (int i = 0; i < TAGS_MANDATORY.Length; i++)
+                        string tag = match.Groups["TAG"].Value;
+                        string val = match.Groups["VALUE"].Value;
+                        if (tag == "TITLE")
                         {
-                            string tag = match.Groups["TAG"].Value;
-                            if (tag == TAGS_MANDATORY[i])
-                            {
-                                tagValues[tag] = match.Groups["VALUE"].Value;
-                                if (tag == "BPM")
-                                {
-                                    double.TryParse(tagValues["BPM"], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
-                                    bpm *= 4.0;
-                                }
-                                if (tag == "GAP")
-                                {
-                                    double.TryParse(tagValues["GAP"], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap);
-                                }
-                                break;
-                            }
+                            title = val;
+                        }
+                        else if (tag == "ARTIST")
+                        {
+                            artist = val;
+                        }
+                        else if (tag == "GAP")
+                        {
+                            double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap);
+                        }
+                        else if (tag == "BPM")
+                        {
+                            double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
+                            bpm *= 4.0;
                         }
                     }
                     else
@@ -83,15 +84,8 @@ namespace us2lrc
                                     TimeSpan lastTime = startTime + TimeSpan.FromMinutes(durationMinutes);
                                     last = string.Format("<{0:00}:{1:00}.{2:00}>", lastTime.Minutes, lastTime.Seconds, lastTime.Milliseconds / 10);
 
-                                    // "I don't have a list of which numbers correspond to which notes, though I believe that '0' is C1"
-                                    //int pitch = int.Parse(c[3]); // Ignored
-
                                     // Add syllable
                                     str += columns[4];
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Found note with missing columns!");
                                 }
                             }
                             else if (columns[0].StartsWith("-") || columns[0] == "E")
@@ -112,6 +106,12 @@ namespace us2lrc
             string outFile = Path.Combine(outPath, fileWOExtension + ".lrc");
             using (StreamWriter file = new StreamWriter(outFile))
             {
+                // Write tags
+                file.WriteLine(string.Format("[ar:{0}]", artist));
+                file.WriteLine(string.Format("[ti:{0}]", title));
+                file.WriteLine("[by:Converted using us2lrc - https://github.com/darkedge/us2lrc]");
+
+                // Write notes
                 foreach (string line in lines)
                 {
                     file.WriteLine(line);
