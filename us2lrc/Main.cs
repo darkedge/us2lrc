@@ -123,7 +123,9 @@ namespace us2lrc
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("Usage: \"input directory\" \"output directory\"");
+                Console.WriteLine("Usage: us2lrc.exe \"input directory\" \"output directory\"");
+                Console.WriteLine("Example: us2lrc.exe \"C:\\mylyrics \"C:\\mylyrics\\output\"");
+                Console.WriteLine("Example: us2lrc.exe \".\" \"output\"");
                 return;
             }
 
@@ -146,6 +148,8 @@ namespace us2lrc
             {
                 ConvertUSToTXT(name, outPath);
             }
+
+            Console.WriteLine( inFiles.Length.ToString() + " files processed.");
         }
     }
 }
