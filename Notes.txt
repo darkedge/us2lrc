@@ -1,0 +1,16 @@
+TODO
+
+ID tags
+[ar:Lyrics artist]
+[al:Album where the song is from]
+[ti:Lyrics (song) title]
+[au:Creator of the Songtext]
+[length:How long the song is]
+[by:Creator of the LRC file]
+[offset:+/- Overall timestamp adjustment in milliseconds, + shifts time up, - shifts down] 
+[re:The player or editor that created the LRC file]
+[ve:version of program]
+
+ti - title
+ar - artist
+[by:Converted using us2lrc - https://github.com/darkedge/us2lrc]
