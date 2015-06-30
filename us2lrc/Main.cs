@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,68 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace us2lrc
 {
-    class Line
-    {
-        public float startTime = 0.0f;
-        public float duration = 0.0f;
-    }
     class USFormat
     {
-        public class Tags
-        {
-            // == Mandatory tags ==
-            public const string Title = "#TITLE:";
-            public const string Artist = "#ARTIST:";
-            public const string Mp3 = "#MP3:";
-            public const string Gap = "#GAP:";
-            public const string Bpm = "#BPM:";
-
-            // == Optional tags ==
-            public const string Genre = "#GENRE:";
-            public const string Edition = "#EDITION:";
-            public const string Cover = "#COVER:";
-            public const string Video = "#VIDEO:";
-            public const string Background = "#BACKGROUND:";
-            public const string Relative = "#RELATIVE:";
-        }
-
         public static string[] TAGS_MANDATORY = { "TITLE", "ARTIST", "MP3", "GAP", "BPM" };
-
-        // These are not used for now
-        
-
-
-        
-
-        /*
-        // == Mandatory tags ==
-
-        // Title of the song
-        public string Title = null;
-        // Artist behind the song
-        public string Artist = null;
-        // The name of the MP3 being used for this song.
-        public string Mp3 = null;
-        // The amount of time, in milliseconds, before the lyrics start.
-        public int Gap = 0;
-        // Beats per minute.
-        public float Bpm = 0.0f;
-
-        // == Optional tags ==
-
-        // The genre of the song.
-        public string Genre = null;
-        // Typically refers to the SingStar edition, if applicable, that the .txt file is taken from.
-        public string Edition = null;
-        // Typically the single/album art appropriate for the song, to be displayed on the song selection screen.
-        public string Cover = null;
-        // The name of the video file used for this song.
-        public string Video = null;
-        // If you don't have a video file, then you may prefer to have a background image displayed instead of a plain background or visualization.
-        public string Background = null;
-        // This is an unusual tag that I will talk about later. It is simply set to YES or NO.
-        public bool Relative = false;
-         * */
     }
 
     class Converter
@@ -76,12 +18,12 @@ namespace us2lrc
         static void ConvertUSToTXT(string path, string outPath)
         {
             Console.WriteLine("Converting file: " + path);
-            //USFormat format = new USFormat();
-
             Dictionary<string, string> tagValues = new Dictionary<string, string>();
             List<string> lines = new List<string>();
             string str = "";
             string last = "";
+            double bpm = 0.0;
+            double gap = 0.0;
 
             // Read file
             using (StreamReader rdr = new StreamReader(path))
@@ -99,27 +41,35 @@ namespace us2lrc
                             if (tag == USFormat.TAGS_MANDATORY[i])
                             {
                                 tagValues[tag] = match.Groups["VALUE"].Value;
+                                if (tag == "BPM")
+                                {
+                                    double.TryParse(tagValues["BPM"], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
+                                }
+                                if (tag == "GAP")
+                                {
+                                    double.TryParse(tagValues["GAP"], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap);
+                                }
                                 break;
                             }
                         }
                     }
                     else
                     {
-                        string[] c = line.Split(new char[] { ' ' }, 5);
-                        if (c.Length > 0)
+                        string[] columns = line.Split(new char[] { ' ' }, 5);
+                        if (columns.Length > 0)
                         {
-                            if (c[0] == ":" || c[0] == "*" || c[0] == "F")
+                            if (columns[0] == ":" || columns[0] == "*" || columns[0] == "F")
                             {
                                 // : - Regular note
                                 // * - Golden note
                                 // F - Freestyle note
                                 // LRC has no support to distinguish these
-                                if (c.Length == 5)
+                                if (columns.Length == 5)
                                 {
                                     // number of beats into the song at which point this syllable appears.
-                                    double minutes = double.Parse(c[1]) / double.Parse(tagValues["BPM"]);
+                                    double minutes = double.Parse(columns[1]) / bpm;
 
-                                    TimeSpan startTime = TimeSpan.FromMinutes(minutes) + TimeSpan.FromMilliseconds(double.Parse(tagValues["GAP"]));
+                                    TimeSpan startTime = TimeSpan.FromMinutes(minutes) + TimeSpan.FromMilliseconds(gap);
                                     if (str.Length == 0)
                                     {
                                         // First note of the line
@@ -132,7 +82,7 @@ namespace us2lrc
                                     }
 
                                     // number of beats that the note goes on for
-                                    double durationMinutes = double.Parse(c[1]) / double.Parse(tagValues["BPM"]);
+                                    double durationMinutes = double.Parse(columns[2]) / bpm;
                                     TimeSpan lastTime = startTime + TimeSpan.FromMinutes(durationMinutes);
                                     last = string.Format("<{0:00}:{1:00}.{2:00}>", lastTime.Minutes, lastTime.Seconds, lastTime.Milliseconds / 10);
 
@@ -140,14 +90,14 @@ namespace us2lrc
                                     //int pitch = int.Parse(c[3]); // Ignored
 
                                     // Add syllable
-                                    str += c[4];
+                                    str += columns[4];
                                 }
                                 else
                                 {
                                     Console.WriteLine("Found note with missing columns!");
                                 }
                             }
-                            else if (c[0].StartsWith("-") || c[0] == "E")
+                            else if (columns[0].StartsWith("-") || columns[0] == "E")
                             {
                                 // Add duration of last note
                                 str += last;
