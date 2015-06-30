@@ -40,6 +40,7 @@ namespace us2lrc
                                 if (tag == "BPM")
                                 {
                                     double.TryParse(tagValues["BPM"], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
+                                    bpm *= 4.0;
                                 }
                                 if (tag == "GAP")
                                 {
