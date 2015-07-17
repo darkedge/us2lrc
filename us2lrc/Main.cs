@@ -43,10 +43,12 @@ namespace us2lrc
                         }
                         else if (tag == "GAP")
                         {
+                            val = val.Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
                             double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap);
                         }
                         else if (tag == "BPM")
                         {
+                            val = val.Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
                             double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
                             bpm *= 4.0;
                         }
