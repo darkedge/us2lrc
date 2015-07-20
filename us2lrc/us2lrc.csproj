@@ -35,7 +35,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Coverter.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="SongFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
