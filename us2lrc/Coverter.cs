@@ -16,6 +16,7 @@ namespace us2lrc
 
         private SongFile _songFile;
         private ICollection<string> _lines;
+        private const String converterField = "us2lrc";
 
         public Coverter(String fileName)
         {
@@ -65,6 +66,10 @@ namespace us2lrc
                     }
                 }
             }
+            catch (NoteException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -107,7 +112,7 @@ namespace us2lrc
                     double beats;
                     if (!double.TryParse(beatsColumn, out beats))
                     {
-                        throw new NoteException(String.Format("Line '{0}' couldn't parse the beat start", line));
+                        throw new NoteException(String.Format("Line '{0}' couldn't parse the beat start.", line));
                     }
 
 
@@ -253,6 +258,7 @@ namespace us2lrc
                     writer.WriteLine(string.Format("[ar:{0}]", songFile.artist));
                     writer.WriteLine(string.Format("[ti:{0}]", songFile.title));
                     writer.WriteLine(string.Format("[by:{0}]", byField));
+                    writer.WriteLine(string.Format("[re:{0}]", converterField));
 
                     foreach (var line in lines)
                     {

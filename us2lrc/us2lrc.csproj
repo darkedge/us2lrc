@@ -38,6 +38,7 @@
     <Compile Include="Coverter.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SongFile.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -44,6 +44,7 @@ namespace us2lrc
                 {
                     Console.WriteLine("Converting file: {0}", file.GetSourceName());
                     file.Convert();
+                    file.Save(outPath);
                 }
                 catch (Exception e)
                 {
@@ -51,7 +52,6 @@ namespace us2lrc
                 }
                 
 
-                file.Save(outPath);
             }
 
             Console.WriteLine( inFiles.Length + " files processed.");
