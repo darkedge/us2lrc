@@ -4,15 +4,16 @@ using System.Linq;
 
 namespace us2lrc
 {
-    class ConverterMain
-                    {
-        static void Main(string[] args)
+    internal class ConverterMain
+    {
+        private static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length < 2 && args.Length > 3)
             {
-                Console.WriteLine("Usage: us2lrc.exe \"input directory\" \"output directory\"");
+                Console.WriteLine("Usage: us2lrc.exe \"input directory\" \"output directory\" \"[optional]RemoveChars\"");
                 Console.WriteLine("Example: us2lrc.exe \"C:\\mylyrics \"C:\\mylyrics\\output\"");
                 Console.WriteLine("Example: us2lrc.exe \".\" \"output\"");
+                Console.WriteLine("Example: us2lrc.exe \".\" \"output\" ~");
                 return;
             }
 
@@ -28,17 +29,25 @@ namespace us2lrc
             string outPath = args[1];
             if (!Directory.Exists(outPath))
             {
-            Directory.CreateDirectory(outPath);
+                Directory.CreateDirectory(outPath);
             }
-            
+
+            string RemoveCharacters = String.Empty;
+            if (args.Length > 2)
+            {
+                RemoveCharacters = args[2];
+            }
+
 
             // Put all txt files in root directory into array.
             string[] inFiles = Directory.GetFiles(inPath, "*.txt"); // <-- Case-insensitive
 
-            
 
             foreach (var file in inFiles
-                .Select(name => new Converter(name)))
+                .Select(name => new Converter(name)
+                {
+                    RemoveCharacters = RemoveCharacters
+                }))
             {
                 try
                 {
@@ -47,14 +56,12 @@ namespace us2lrc
                     file.Save(outPath);
                 }
                 catch (Exception e)
-            {
-                    Console.Error.WriteLine("\tCouldn't parse file, error message: {0}", e.Message );
+                {
+                    Console.Error.WriteLine("\tCouldn't parse file, error message: {0}", e.Message);
                 }
-                
-
             }
 
-            Console.WriteLine( inFiles.Length + " files processed.");
+            Console.WriteLine(inFiles.Length + " files processed.");
         }
     }
 }

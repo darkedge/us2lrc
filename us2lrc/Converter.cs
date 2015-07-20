@@ -11,6 +11,8 @@ namespace us2lrc
     public class Converter
     {
         public Encoding Encoding { get; set; }
+        public string RemoveCharacters { get; set; }
+
         private readonly string _fileName;
         private const string byField = "Converted using us2lrc - https://github.com/darkedge/us2lrc";
 
@@ -22,6 +24,7 @@ namespace us2lrc
         {
             _fileName = fileName;
             Encoding = Encoding.Default;
+            RemoveCharacters = string.Empty;
         }
 
         public void Convert()
@@ -77,7 +80,7 @@ namespace us2lrc
         }
 
         //Enhanced LRC format
-        private static IEnumerable<string> WriteNotes(string firstLine, StreamReader rdr, SongFile songFile)
+        private IEnumerable<string> WriteNotes(string firstLine, StreamReader rdr, SongFile songFile)
         {
             HashSet<string> notes = new HashSet<string>(new []{":", "*", "F"});
             HashSet<string> endNote = new HashSet<string>(new[] { "-"});
@@ -126,10 +129,20 @@ namespace us2lrc
                         if (columns.Length == 5)
                         {
 
+                            var syllable = columns[4];
+                            if (!String.IsNullOrEmpty(RemoveCharacters))
+                            {
+                                syllable = RemoveCharacters.Aggregate(syllable, (current, character) => current.Replace(character, ' '));
+                            }
+
+                            if (String.IsNullOrEmpty(syllable.Trim()))
+                            {
+                                Console.WriteLine("Skipping empty line.");
+                            }
+
                             sb.Append(startTime.ToLyricTiming(sb.Length == 0));
 
                             // Add syllable
-                            var syllable = columns[4];
                             sb.Append(syllable);
                         }
                         else
