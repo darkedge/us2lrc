@@ -5,7 +5,7 @@ using System.Linq;
 namespace us2lrc
 {
     class ConverterMain
-    {
+                    {
         static void Main(string[] args)
         {
             if (args.Length != 2)
@@ -28,7 +28,7 @@ namespace us2lrc
             string outPath = args[1];
             if (!Directory.Exists(outPath))
             {
-                Directory.CreateDirectory(outPath);
+            Directory.CreateDirectory(outPath);
             }
             
 
@@ -47,7 +47,7 @@ namespace us2lrc
                     file.Save(outPath);
                 }
                 catch (Exception e)
-                {
+            {
                     Console.Error.WriteLine("\tCouldn't parse file, error message: {0}", e.Message );
                 }
                 
