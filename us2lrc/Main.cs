@@ -10,9 +10,9 @@ namespace us2lrc
 {
     class Converter
     {
-        static void ConvertUSToTXT(string path, string outPath)
+        static bool ConvertUSToTXT(string path, string outPath)
         {
-            Console.WriteLine("Converting file: " + path);
+            Console.Write("Converting file: " + path + "... ");
             List<string> lines = new List<string>();
             string str = "";
             string last = "";
@@ -22,6 +22,8 @@ namespace us2lrc
             string artist = "";
 
             // Read file
+            bool success = true;
+            string reason = "";
             using (StreamReader rdr = new StreamReader(path))
             {
                 string line;
@@ -44,12 +46,22 @@ namespace us2lrc
                         else if (tag == "GAP")
                         {
                             val = val.Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
-                            double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap);
+                            if (!double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out gap))
+                            {
+                                success = false;
+                                reason = "Could not parse GAP value.";
+                                break;
+                            }
                         }
                         else if (tag == "BPM")
                         {
                             val = val.Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
-                            double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm);
+                            if (!double.TryParse(val, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out bpm))
+                            {
+                                success = false;
+                                reason = "Could not parse BPM value.";
+                                break;
+                            }
                             bpm *= 4.0;
                         }
                     }
@@ -103,6 +115,12 @@ namespace us2lrc
                 }
             }
 
+            if (!success)
+            {
+                Console.WriteLine("Failed!\nReason: " + reason);
+                return success;
+            }
+
             // Create destination text file
             string fileWOExtension = Path.GetFileNameWithoutExtension(path);
             string outFile = Path.Combine(outPath, fileWOExtension + ".lrc");
@@ -119,6 +137,9 @@ namespace us2lrc
                     file.WriteLine(line);
                 }
             }
+
+            Console.WriteLine("OK.");
+            return success;
         }
 
         static void Main(string[] args)
@@ -146,12 +167,16 @@ namespace us2lrc
             // Put all txt files in root directory into array.
             string[] inFiles = Directory.GetFiles(inPath, "*.txt"); // <-- Case-insensitive
 
+            int numConverted = 0;
             foreach (string name in inFiles)
             {
-                ConvertUSToTXT(name, outPath);
+                if (ConvertUSToTXT(name, outPath))
+                {
+                    numConverted++;
+                }
             }
 
-            Console.WriteLine( inFiles.Length.ToString() + " files processed.");
+            Console.WriteLine(numConverted.ToString() + " files processed.");
         }
     }
 }
