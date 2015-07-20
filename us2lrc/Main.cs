@@ -24,7 +24,7 @@ namespace us2lrc
             // Read file
             bool success = true;
             string reason = "";
-            using (StreamReader rdr = new StreamReader(path))
+            using (StreamReader rdr = new StreamReader(path, Encoding.Default))
             {
                 string line;
                 while ((line = rdr.ReadLine()) != null)
@@ -124,7 +124,7 @@ namespace us2lrc
             // Create destination text file
             string fileWOExtension = Path.GetFileNameWithoutExtension(path);
             string outFile = Path.Combine(outPath, fileWOExtension + ".lrc");
-            using (StreamWriter file = new StreamWriter(outFile))
+            using (StreamWriter file = new StreamWriter(outFile, false, Encoding.Default))
             {
                 // Write tags
                 file.WriteLine(string.Format("[ar:{0}]", artist));
