@@ -35,7 +35,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Coverter.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

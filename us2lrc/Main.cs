@@ -38,7 +38,7 @@ namespace us2lrc
             
 
             foreach (var file in inFiles
-                .Select(name => new Coverter(name)))
+                .Select(name => new Converter(name)))
             {
                 try
                 {

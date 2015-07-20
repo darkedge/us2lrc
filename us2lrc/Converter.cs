@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace us2lrc
 {
-    public class Coverter
+    public class Converter
     {
         public Encoding Encoding { get; set; }
         private readonly string _fileName;
@@ -18,7 +18,7 @@ namespace us2lrc
         private ICollection<string> _lines;
         private const String converterField = "us2lrc";
 
-        public Coverter(String fileName)
+        public Converter(String fileName)
         {
             _fileName = fileName;
             Encoding = Encoding.Default;
