@@ -8,13 +8,13 @@ namespace us2lrc
     {
         private static void Main(string[] args)
         {
-            if (args.Length < 2 && args.Length > 3)
+            if (args.Length < 2 || args.Length > 3)
             {
                 Console.WriteLine("Usage: us2lrc.exe \"input directory\" \"output directory\" \"[optional]RemoveChars\"");
                 Console.WriteLine("Example: us2lrc.exe \"C:\\mylyrics \"C:\\mylyrics\\output\"");
                 Console.WriteLine("Example: us2lrc.exe \".\" \"output\"");
                 Console.WriteLine("Example: us2lrc.exe \".\" \"output\" ~");
-                return;
+                Environment.Exit(1);
             }
 
             // Check if input directory exists
